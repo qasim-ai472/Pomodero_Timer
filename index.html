@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GrowFocus — Pomodoro Garden Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="timer.css"/>
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <!-- HEADER -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <h1>Grow<span>Focus</span></h1>
+      </div>
+      <p class="tagline">Pomodoro · Garden Timer</p>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- LEFT PANEL: Timer + Stats -->
+      <div class="left-panel">
+
+        <!-- TIMER CARD -->
+        <div class="card timer-card">
+          <p class="card-label">Session Timer</p>
+
+          <!-- Mode Tabs -->
+          <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="focus" data-duration="1500">Focus</button>
+            <button class="mode-tab" data-mode="short" data-duration="300">Short Break</button>
+            <button class="mode-tab" data-mode="long" data-duration="900">Long Break</button>
+          </div>
+
+          <!-- Ring Timer -->
+          <div class="timer-ring-wrap">
+            <svg viewBox="0 0 220 220" width="220" height="220">
+              <circle class="ring-bg" cx="110" cy="110" r="100"/>
+              <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="100"/>
+            </svg>
+            <div class="timer-inner">
+              <div class="timer-display" id="timerDisplay">25:00</div>
+              <div class="timer-mode-label" id="modeLabel">Focus Time</div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls">
+            <button class="btn btn-primary" id="startBtn">Start</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <!-- STATS CARD -->
+        <div class="card stats-card">
+          <p class="card-label">Today's Progress</p>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="sessionsCount">0</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="focusTime">0m</div>
+              <div class="stat-label">Focus Time</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="plantsCount">0</div>
+              <div class="stat-label">Trees Grown</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="streakCount">0</div>
+              <div class="stat-label">Best Streak</div>
+            </div>
+          </div>
+          <div class="pom-track">
+            <span class="pom-track-label">Pomodoro Set</span>
+            <div class="pomodoro-dots" id="pomodoroDots">
+              <div class="pom-dot"></div>
+              <div class="pom-dot"></div>
+              <div class="pom-dot"></div>
+              <div class="pom-dot"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT PANEL: Live Growing Tree + Garden -->
+      <div class="right-panel">
+
+        <!-- LIVE TREE CARD -->
+        <div class="card live-tree-card">
+          <div class="live-tree-header">
+            <p class="card-label">Growing Now</p>
+            <span class="growth-badge" id="growthBadge">Waiting...</span>
+          </div>
+
+          <!-- SVG Tree that grows in real time -->
+          <div class="tree-stage-wrap">
+            <svg id="treeSvg" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+
+              <!-- Ground -->
+              <ellipse cx="140" cy="248" rx="90" ry="8" fill="rgba(93,186,111,0.12)" />
+
+              <!-- STAGE 1: Seed (always visible when not grown) -->
+              <g id="stageSeed" class="tree-stage">
+                <ellipse cx="140" cy="242" rx="10" ry="6" fill="#7c4a1e" opacity="0.8"/>
+                <ellipse cx="140" cy="239" rx="7" ry="4" fill="#a0622a" opacity="0.9"/>
+              </g>
+
+              <!-- STAGE 2: Sprout -->
+              <g id="stageSprout" class="tree-stage" opacity="0">
+                <!-- Stem -->
+                <line x1="140" y1="242" x2="140" y2="210" stroke="#4a8c5c" stroke-width="3" stroke-linecap="round"/>
+                <!-- Two tiny leaves -->
+                <ellipse cx="130" cy="218" rx="10" ry="5" fill="#5dba6f" transform="rotate(-30 130 218)"/>
+                <ellipse cx="150" cy="218" rx="10" ry="5" fill="#5dba6f" transform="rotate(30 150 218)"/>
+                <!-- Tip -->
+                <ellipse cx="140" cy="207" rx="4" ry="7" fill="#7de08f"/>
+              </g>
+
+              <!-- STAGE 3: Sapling -->
+              <g id="stageSapling" class="tree-stage" opacity="0">
+                <!-- Trunk -->
+                <rect x="136" y="200" width="8" height="44" rx="3" fill="#7c4a1e"/>
+                <!-- Branch left -->
+                <line x1="140" y1="220" x2="118" y2="205" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <!-- Branch right -->
+                <line x1="140" y1="215" x2="162" y2="200" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <!-- Small canopy bottom -->
+                <ellipse cx="140" cy="196" rx="30" ry="22" fill="#3d9e52" opacity="0.85"/>
+                <!-- Leaf cluster left branch -->
+                <circle cx="112" cy="200" r="12" fill="#4aae60" opacity="0.9"/>
+                <!-- Leaf cluster right branch -->
+                <circle cx="166" cy="195" r="12" fill="#4aae60" opacity="0.9"/>
+                <!-- Top cluster -->
+                <ellipse cx="140" cy="182" rx="22" ry="18" fill="#52b86a"/>
+              </g>
+
+              <!-- STAGE 4: Young Tree -->
+              <g id="stageYoung" class="tree-stage" opacity="0">
+                <!-- Trunk -->
+                <rect x="133" y="190" width="14" height="55" rx="5" fill="#7c4a1e"/>
+                <rect x="135" y="190" width="5" height="55" rx="3" fill="#a0622a" opacity="0.5"/>
+                <!-- Root hints -->
+                <line x1="133" y1="240" x2="115" y2="248" stroke="#7c4a1e" stroke-width="3" stroke-linecap="round"/>
+                <line x1="147" y1="240" x2="165" y2="248" stroke="#7c4a1e" stroke-width="3" stroke-linecap="round"/>
+                <!-- Left branch -->
+                <line x1="140" y1="215" x2="105" y2="195" stroke="#7c4a1e" stroke-width="5" stroke-linecap="round"/>
+                <!-- Right branch -->
+                <line x1="140" y1="210" x2="175" y2="190" stroke="#7c4a1e" stroke-width="5" stroke-linecap="round"/>
+                <!-- Main canopy layers -->
+                <ellipse cx="140" cy="185" rx="48" ry="38" fill="#3d9e52"/>
+                <ellipse cx="105" cy="190" rx="22" ry="18" fill="#4aae60"/>
+                <ellipse cx="175" cy="185" rx="22" ry="18" fill="#4aae60"/>
+                <ellipse cx="140" cy="165" rx="36" ry="28" fill="#52b86a"/>
+                <ellipse cx="125" cy="160" rx="18" ry="15" fill="#5dba6f"/>
+                <ellipse cx="158" cy="162" rx="18" ry="15" fill="#5dba6f"/>
+                <!-- Highlight -->
+                <ellipse cx="128" cy="158" rx="10" ry="8" fill="#7de08f" opacity="0.5"/>
+              </g>
+
+              <!-- STAGE 5: Full Tree (complete) -->
+              <g id="stageFull" class="tree-stage" opacity="0">
+                <!-- Deep roots -->
+                <line x1="133" y1="242" x2="108" y2="252" stroke="#5a3010" stroke-width="4" stroke-linecap="round"/>
+                <line x1="147" y1="242" x2="172" y2="252" stroke="#5a3010" stroke-width="4" stroke-linecap="round"/>
+                <line x1="140" y1="244" x2="140" y2="254" stroke="#5a3010" stroke-width="3" stroke-linecap="round"/>
+                <!-- Thick trunk with texture -->
+                <rect x="130" y="182" width="20" height="62" rx="7" fill="#7c4a1e"/>
+                <rect x="133" y="182" width="7" height="62" rx="4" fill="#a0622a" opacity="0.45"/>
+                <!-- Main branches -->
+                <line x1="140" y1="210" x2="96" y2="185" stroke="#6b3e18" stroke-width="7" stroke-linecap="round"/>
+                <line x1="140" y1="204" x2="184" y2="178" stroke="#6b3e18" stroke-width="7" stroke-linecap="round"/>
+                <line x1="140" y1="198" x2="140" y2="168" stroke="#6b3e18" stroke-width="6" stroke-linecap="round"/>
+                <!-- Sub-branches -->
+                <line x1="96" y1="185" x2="78" y2="168" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <line x1="96" y1="185" x2="112" y2="168" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <line x1="184" y1="178" x2="200" y2="162" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <line x1="184" y1="178" x2="168" y2="162" stroke="#7c4a1e" stroke-width="4" stroke-linecap="round"/>
+                <!-- Canopy — back layer (darker) -->
+                <ellipse cx="140" cy="165" rx="72" ry="58" fill="#2d7a3e"/>
+                <!-- Mid layers -->
+                <ellipse cx="90" cy="170" rx="30" ry="25" fill="#3d9e52"/>
+                <ellipse cx="190" cy="162" rx="30" ry="25" fill="#3d9e52"/>
+                <ellipse cx="140" cy="148" rx="50" ry="40" fill="#3d9e52"/>
+                <!-- Front bright clusters -->
+                <ellipse cx="78" cy="160" rx="22" ry="18" fill="#4aae60"/>
+                <ellipse cx="200" cy="153" rx="22" ry="18" fill="#4aae60"/>
+                <ellipse cx="115" cy="140" rx="28" ry="22" fill="#52b86a"/>
+                <ellipse cx="165" cy="138" rx="28" ry="22" fill="#52b86a"/>
+                <ellipse cx="140" cy="128" rx="36" ry="28" fill="#5dba6f"/>
+                <!-- Top bright highlights -->
+                <ellipse cx="128" cy="118" rx="18" ry="14" fill="#6dce80"/>
+                <ellipse cx="155" cy="120" rx="16" ry="13" fill="#6dce80"/>
+                <ellipse cx="140" cy="110" rx="14" ry="11" fill="#7de08f"/>
+                <!-- Sunlight sparkle on top -->
+                <ellipse cx="133" cy="106" rx="6" ry="5" fill="#a8f0b8" opacity="0.6"/>
+                <!-- Small fruits/flowers -->
+                <circle cx="102" cy="152" r="4" fill="#f87171" opacity="0.8"/>
+                <circle cx="176" cy="145" r="4" fill="#f87171" opacity="0.8"/>
+                <circle cx="118" cy="128" r="3" fill="#fcd34d" opacity="0.9"/>
+                <circle cx="162" cy="126" r="3" fill="#fcd34d" opacity="0.9"/>
+              </g>
+
+              <!-- Growth progress particles (shown during growth) -->
+              <g id="particles" opacity="0"></g>
+
+            </svg>
+
+            <!-- Stage label -->
+            <div class="stage-label" id="stageLabel">🌰 Seed</div>
+          </div>
+
+          <!-- Growth progress bar -->
+          <div class="growth-bar-wrap">
+            <div class="growth-bar-track">
+              <div class="growth-bar-fill" id="growthBarFill"></div>
+            </div>
+            <div class="growth-stages-labels">
+              <span>Seed</span>
+              <span>Sprout</span>
+              <span>Sapling</span>
+              <span>Young</span>
+              <span>Full Tree</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GARDEN CARD (past completed trees) -->
+        <div class="card garden-card">
+          <div class="garden-header">
+            <p class="card-label">Your Forest</p>
+            <span class="garden-count" id="gardenCount">0 trees</span>
+            <button class="btn-clear" id="clearGarden">Clear</button>
+          </div>
+          <div class="garden-ground" id="gardenGround">
+            <div class="rain-container" id="rainContainer"></div>
+            <div class="garden-empty" id="gardenEmpty">
+              <div class="empty-icon">🌳</div>
+              <p>Complete a session to plant your first tree</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>Built with focus &mdash; GrowFocus Pomodoro &middot; Stay consistent, grow every day.</footer>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-title" id="toastTitle">Session Complete!</div>
+    <div id="toastMsg">Your tree has fully grown! 🌳</div>
+  </div>
+
+  <script src="timer.js"></script>
+</body>
+</html>
